@@ -71,7 +71,7 @@
               <el-button
                 type="danger"
                 icon="el-icon-share"
-                size="mini"
+                size="mini" @click="updateUserRole(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -146,6 +146,30 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="updateDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="updateUser"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
+
+    <!-- 分配用户角色的对话框 -->
+    <el-dialog title="提示" :visible.sync="showUpdateUser" width="50%" @close="updateUserCloseEvent">
+      <div>
+        <p>用户名:{{userInfo.username}}</p> 
+        <p>角色:{{userInfo.role_name}}</p>
+        <p>
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showUpdateUser = false">取 消</el-button>
+        <el-button type="primary" @click="saveUserRole"
           >确 定</el-button
         >
       </span>
@@ -233,7 +257,13 @@ export default {
           { required: true, message: "请输入手机号", trigger: "blur" },
           { validator: checkPhone, trigger: "blur" },
         ],
-      }
+      },
+      showUpdateUser:false,
+      // 需要被分配角色的用户信息
+      userInfo:{},
+      roleList:{},
+      // 已选中的角色id值
+      selectedRoleId:{}
     };
   },
   created() {
@@ -341,6 +371,36 @@ export default {
            this.$message.success('完成了删除操作');
             this.getUserList()
             console.log(id,result);
+    },
+    async updateUserRole(userInfo){
+      // 将需要分配角色的用户信息添加到data当中
+      this.userInfo = userInfo
+
+      // 在展示对话框之前，获取所有的角色列表
+      const {data:res} = await this.$http.get('roles')
+      if(res.meta.status!==200){
+        return this.$message.error('获取角色列表失败！')
+      }
+
+      // 将获取的角色列表保存到data中
+      this.roleList = res.data
+      this.showUpdateUser = true
+    },
+    async saveUserRole(){
+      if(!this.selectedRoleId){
+        return this.$message.error('请选择要分配的角色')
+      }
+      const {data:res} = await this.$http.put(`users/${this.userInfo.id}/role`,{rid:this.selectedRoleId})
+      if(res.meta.status!==200){
+        return this.$message.error('更新用户角色失败！')
+      }
+      this.$message.success('更新用户角色成功！')
+      this.getUserList()
+      this.showUpdateUser = false
+    },
+    updateUserCloseEvent(){
+      this.selectedRoleId = '',
+      this.userInfo = {}
     }
   },
 };

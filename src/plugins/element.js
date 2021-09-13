@@ -3,7 +3,7 @@ import { Button } from 'element-ui'
 import {Form , FormItem} from 'element-ui'
 import {Input} from 'element-ui'
 //导入弹框提示组件
-import {Message,Select,Tabs,TabPane,Alert,Option,Cascader,Tree,Dialog,Pagination,Tag,Container,MessageBox,Switch,Tooltip,Table,TableColumn,Header,Aside,Card,Main,Menu,Submenu,MenuItem,Breadcrumb,BreadcrumbItem,Row,Col} from 'element-ui'
+import {Message,Steps,Step,Select,Upload,CheckboxGroup,Checkbox,Tabs,TabPane,Alert,Option,Cascader,Tree,Dialog,Pagination,Tag,Container,MessageBox,Switch,Tooltip,Table,TableColumn,Header,Aside,Card,Main,Menu,Submenu,MenuItem,Breadcrumb,BreadcrumbItem,Row,Col} from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Form)
@@ -35,6 +35,11 @@ Vue.use(Cascader)
 Vue.use(Alert)
 Vue.use(Tabs)
 Vue.use(TabPane)
+Vue.use(Steps)
+Vue.use(Step)
+Vue.use(CheckboxGroup)
+Vue.use(Checkbox)
+Vue.use(Upload)
 
 //全局挂载  每个组件都可以通过this来调用组件
 Vue.prototype.$message = Message
